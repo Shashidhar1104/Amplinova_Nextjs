@@ -1,301 +1,284 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { FaCheck, FaLightbulb } from "react-icons/fa";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 
-interface ContactProps {
-  mode?: "combined" | "it" | "marketing";
-  title?: string | null;
-  subtitle?: string | null;
-}
+import {
+  FaChartLine,
+  FaCloud,
+  FaMobile,
+  FaArrowRight,
+  FaGoogle,
+  FaHashtag,
+  FaAd,
+  FaCogs,
+  FaServer,
+  FaDatabase,
+  FaPenNib,
+  FaEnvelopeOpenText,
+  FaChartBar,
+  FaCode,
+  FaShieldAlt
+} from "react-icons/fa";
 
-interface ITForm {
-  form_type: string;
-  fullname: string;
-  company: string;
-  email: string;
-  phone: string;
-  service: string;
-  budget: string;
+interface Service {
+  title: string;
+  slug: string;
   description: string;
-  deadline: string;
-  file: File | null;
+  icon: React.ReactNode;
 }
 
-interface DMForm {
-  form_type: string;
-  fullname: string;
-  brand: string;
-  email: string;
-  phone: string;
-  service: string;
-  budget: string;
-  goals: string[];
-  description: string;
-  file: File | null;
+interface ServiceCardProps extends Service {
+  index: number;
+  isVisible: boolean;
+  category: string;
 }
 
-export default function Contact({
-  mode = "combined",
-  title = null,
-  subtitle = null,
-}: ContactProps) {
+const ServiceCard = ({
+  title,
+  description,
+  icon,
+  index,
+  isVisible,
+  category,
+  slug,
+}: ServiceCardProps) => {
 
-  const [formType, setFormType] = useState<"it" | "dm">("it");
-  const [submitStatus, setSubmitStatus] = useState<"success" | "error" | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const [itData, setItData] = useState<ITForm>({
-    form_type: "it",
-    fullname: "",
-    company: "",
-    email: "",
-    phone: "",
-    service: "",
-    budget: "",
-    description: "",
-    deadline: "",
-    file: null,
-  });
-
-  const [dmData, setDmData] = useState<DMForm>({
-    form_type: "dm",
-    fullname: "",
-    brand: "",
-    email: "",
-    phone: "",
-    service: "",
-    budget: "",
-    goals: [],
-    description: "",
-    file: null,
-  });
-
-  const handleITChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    const { name, value, files } = e.target as HTMLInputElement;
-
-    setItData((prev) => ({
-      ...prev,
-      [name]: files ? files[0] : value,
-    }));
-  };
-
-  const handleDMChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    const { name, value, files, type, checked } = e.target as HTMLInputElement;
-
-    if (type === "checkbox") {
-      setDmData((prev) => {
-        const newGoals = checked
-          ? [...prev.goals, value]
-          : prev.goals.filter((g) => g !== value);
-
-        return { ...prev, goals: newGoals };
-      });
-      return;
-    }
-
-    setDmData((prev) => ({
-      ...prev,
-      [name]: files ? files[0] : value,
-    }));
-  };
-
-  const handleITSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus(null);
-
-    try {
-
-      const formData = new FormData();
-
-      Object.keys(itData).forEach((key) => {
-        const value = itData[key as keyof ITForm];
-        if (value !== null && value !== "") {
-          formData.append(key, value as any);
-        }
-      });
-
-      const response = await fetch(
-        "https://amplinova.pythonanywhere.com/api/contact/",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      if (response.ok) {
-        setSubmitStatus("success");
-
-        setItData({
-          form_type: "it",
-          fullname: "",
-          company: "",
-          email: "",
-          phone: "",
-          service: "",
-          budget: "",
-          description: "",
-          deadline: "",
-          file: null,
-        });
-
-      } else {
-        setSubmitStatus("error");
-      }
-
-    } catch {
-      setSubmitStatus("error");
-    }
-
-    setIsSubmitting(false);
-  };
-
-  const handleDMSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-  };
-
-  const benefits = [
-    "Free project consultation",
-    "Detailed proposal within 24h",
-    "Dedicated project manager",
-    "Flexible engagement models",
-  ];
+  const router = useRouter();
+  const [isHovered, setIsHovered] = useState(false);
+  const isDM = category === "digital-marketing";
 
   return (
-    <section id="contact" className="relative bg-white text-gray-800 py-12 lg:py-16">
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      className="w-[290px] h-[335px] flex justify-center cursor-pointer"
+    >
+      <motion.div
+        animate={{
+          rotate: isHovered ? 4 : 0,
+          y: isHovered ? -10 : 0,
+          scale: isHovered ? 1.03 : 1,
+          backgroundColor: isHovered
+            ? isDM
+              ? "#F97316"
+              : "#3b82f6"
+            : "#ffffff",
+          boxShadow: isHovered
+            ? "0 18px 28px rgba(0,0,0,0.20)"
+            : "0 4px 10px rgba(0,0,0,0.10)",
+        }}
+        transition={{ duration: 0.25 }}
+        className="w-[280px] h-[320px] rounded-3xl p-5 flex flex-col items-center text-center"
+      >
 
-      <div className="container mx-auto px-4 sm:px-6 relative z-10">
+        {/* Icon */}
+        <motion.div
+          animate={{
+            backgroundColor: isHovered
+              ? "#ffffff"
+              : isDM
+              ? "#F97316"
+              : "#3b82f6",
+            color: isHovered
+              ? isDM
+                ? "#F97316"
+                : "#3b82f6"
+              : "#ffffff",
+          }}
+          className="w-[75px] h-[75px] rounded-2xl flex items-center justify-center mb-4 text-3xl"
+        >
+          {icon}
+        </motion.div>
 
-        <div className="max-w-7xl mx-auto">
+        {/* Title */}
+        <motion.h3
+          animate={{ color: isHovered ? "#ffffff" : "#000000" }}
+          className="text-[25px] font-bold mb-3 w-[160px]"
+        >
+          {title}
+        </motion.h3>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[25%_75%] gap-8 items-start">
+        {/* Description */}
+        <motion.p
+          animate={{ color: isHovered ? "#fdfdfd" : "#4b5563" }}
+          className="text-[15px] font-semibold mb-4 px-1 h-[60px]"
+        >
+          {description}
+        </motion.p>
 
-            {/* LEFT PANEL */}
+        {/* Button */}
+        <motion.button
+          onClick={() => {
+            const base =
+              category === "digital-marketing"
+                ? "/services/digital-marketing/"
+                : "/services/it/";
+            router.push(base + slug);
+          }}
+          animate={{
+            backgroundColor: isHovered ? "rgba(255,255,255,0.18)" : "#ffffff",
+            color: isHovered ? "#ffffff" : "#000000",
+            borderColor: isHovered ? "rgba(255,255,255,0.4)" : "#d1d5db",
+          }}
+          className="border px-4 py-2 rounded-full text-[14px] flex items-center gap-2"
+        >
+          Learn More <FaArrowRight />
+        </motion.button>
+      </motion.div>
+    </motion.div>
+  );
+};
 
-            <div className="space-y-6 mt-[100px]">
+export default function Services() {
 
-              <div className="space-y-4">
-                <h2 className="text-3xl sm:text-4xl font-bold">
-                  Start Your Project Today
-                </h2>
+  type ServiceCategory = "marketing" | "it";
 
-                <p className="text-lg text-gray-600">
-                  Transform your vision into reality.
-                  Share your details and we'll get back to you within 24 hours.
-                </p>
-              </div>
+const [category, setCategory] = useState<ServiceCategory>("marketing");
 
-              <div className="space-y-4">
+  
+  const [isVisible, setIsVisible] = useState(false);
 
-                <h3 className="text-xl font-semibold flex items-center gap-2">
-                  <FaLightbulb className="text-yellow-500" />
-                  What you'll get:
-                </h3>
+  const sectionRef = useRef<HTMLDivElement>(null);
 
-                <ul className="space-y-3">
-                  {benefits.map((benefit, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <FaCheck className="w-5 h-5 text-green-500 mt-0.5" />
-                      <span>{benefit}</span>
-                    </li>
-                  ))}
-                </ul>
+  useEffect(() => {
 
-              </div>
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setIsVisible(true);
+      },
+      { threshold: 0.1 }
+    );
 
-            </div>
+    if (sectionRef.current) observer.observe(sectionRef.current);
 
-            {/* RIGHT PANEL FORM */}
+    return () => observer.disconnect();
 
-            <div className="bg-white p-8 rounded-md border border-gray-300 shadow-md w-full">
+  }, []);
 
-              <div className="flex w-full mb-8">
+  const servicesData: Record<string, Service[]> = {
 
-                <button
-                  onClick={() => setFormType("it")}
-                  className={`w-1/2 py-3 font-semibold rounded-l-md border ${
-                    formType === "it"
-                      ? "bg-amber-500 text-white border-amber-600"
-                      : "bg-white text-gray-600 border-gray-300"
-                  }`}
-                >
-                  IT Services
-                </button>
+    "digital-marketing": [
+      { title:"SEO Optimization", slug:"seo", description:"Improve rankings and grow organic traffic.", icon:<FaGoogle/> },
+      { title:"Social Media Marketing", slug:"social-media", description:"Boost engagement and brand presence online.", icon:<FaHashtag/> },
+      { title:"Content Marketing", slug:"content", description:"Create content that attracts and converts.", icon:<FaPenNib/> },
+      { title:"PPC Advertising", slug:"ppc", description:"Get instant results with targeted ads.", icon:<FaAd/> },
+      { title:"Email Marketing", slug:"email", description:"Send emails that engage and drive sales.", icon:<FaEnvelopeOpenText/> },
+      { title:"Analytics & Reporting", slug:"analytics", description:"Track performance with clear insights.", icon:<FaChartBar/> },
+      { title:"Conversion Optimization", slug:"conversion-optimization", description:"Turn visitors into customers effectively.", icon:<FaChartLine/> },
+      { title:"Influencer Marketing", slug:"influencer-marketing", description:"Increase reach with trusted influencers.", icon:<FaHashtag/> },
+    ],
 
-                <button
-                  onClick={() => setFormType("dm")}
-                  className={`w-1/2 py-3 font-semibold rounded-r-md border ${
-                    formType === "dm"
-                      ? "bg-amber-500 text-white border-amber-600"
-                      : "bg-white text-gray-600 border-gray-300"
-                  }`}
-                >
-                  Digital Marketing
-                </button>
+    "it-services": [
+      { title:"Web Development", slug:"web-development", description:"Build fast modern websites.", icon:<FaCode/> },
+      { title:"Mobile App Development", slug:"mobile-app-development", description:"Create apps for iOS and Android.", icon:<FaMobile/> },
+      { title:"Cloud Solutions", slug:"cloud-solutions", description:"Deploy scalable cloud systems.", icon:<FaCloud/> },
+      { title:"Cyber Security", slug:"cybersecurity", description:"Protect systems from digital threats.", icon:<FaShieldAlt/> },
+      { title:"IT Infrastructure", slug:"infrastructure", description:"Set up strong IT systems.", icon:<FaServer/> },
+      { title:"Database Management", slug:"database", description:"Manage and optimize databases.", icon:<FaDatabase/> },
+      { title:"DevOps Services", slug:"devops", description:"Automate workflows.", icon:<FaCogs/> },
+      { title:"AI & ML", slug:"ai-ml", description:"Build smart AI apps.", icon:<FaServer/> },
+    ],
 
-              </div>
+  };
 
-              {formType === "it" && (
+  const currentServices =
+  category === "marketing"
+    ? servicesData["digital-marketing"]
+    : servicesData["it-services"];
 
-                <form onSubmit={handleITSubmit} className="space-y-6">
+  return (
 
-                  <h3 className="text-2xl font-bold mb-4">
-                    IT Development & Tech Solutions
-                  </h3>
+    <section
+      ref={sectionRef}
+      className="pt-10 pb-20 bg-black text-white"
+    >
 
-                  <div className="grid md:grid-cols-2 gap-6">
+      <div className="max-w-7xl mx-auto px-4">
 
-                    <input
-                      type="text"
-                      name="fullname"
-                      placeholder="Enter your Full Name"
-                      value={itData.fullname}
-                      onChange={handleITChange}
-                      className="w-full px-4 py-3 border border-gray-400 rounded-md"
-                    />
+        <div className="text-center mb-12">
+  
+  {/* Heading */}
+  <h2 className="text-4xl md:text-5xl font-bold text-white">
+    Our <span className="text-orange-500">Services</span>
+  </h2>
 
-                    <input
-                      type="text"
-                      name="company"
-                      placeholder="Enter your Company Name"
-                      value={itData.company}
-                      onChange={handleITChange}
-                      className="w-full px-4 py-3 border border-gray-400 rounded-md"
-                    />
+  {/* Orange underline */}
+  <div className="w-20 h-1 bg-orange-500 mx-auto mt-4 rounded-full"></div>
 
-                  </div>
+  {/* Description text */}
+  <p className="text-gray-300 mt-6 text-lg max-w-3xl mx-auto">
+    Transform your digital presence with data-driven marketing strategies that 
+    <span className="text-orange-500"> drive measurable growth.</span>
+  </p>
 
-                  <textarea
-                    name="description"
-                    placeholder="Enter details about your project requirements..."
-                    rows={3}
-                    value={itData.description}
-                    onChange={handleITChange}
-                    className="w-full px-4 py-3 border border-gray-400 rounded-md"
-                  />
+</div>
 
-                  <button
-                    type="submit"
-                    className="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-md font-semibold"
-                  >
-                    Request Proposal
-                  </button>
+        {/* Toggle */}
+        <div className="flex justify-center mt-8 mb-16">
+  <div className="flex bg-[#0f172a] border border-gray-700 rounded-full p-1">
 
-                </form>
+    <button
+      onClick={() => setCategory("marketing")}
+      className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
+        category === "marketing"
+          ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg"
+          : "text-gray-300 hover:text-white"
+      }`}
+    >
+      📈 Digital Marketing
+    </button>
 
-              )}
+    <button
+      onClick={() => setCategory("it")}
+      className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
+        category === "it"
+          ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg"
+          : "text-gray-300 hover:text-white"
+      }`}
+    >
+      ⚙️ IT Services
+    </button>
 
-            </div>
+  </div>
+</div>
 
-          </div>
+        {/* Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 justify-items-center">
+
+          <AnimatePresence mode="wait">
+
+            {currentServices.map((service,index)=>(
+              <ServiceCard
+                key={service.title}
+                {...service}
+                index={index}
+                isVisible={isVisible}
+                category={category === "marketing" ? "digital-marketing" : "it-services"}
+              />
+            ))}
+
+          </AnimatePresence>
 
         </div>
+        {/* Bottom CTA Button */}
+<div className="flex justify-center mt-16">
+  <button
+    className="bg-gradient-to-r from-orange-500 to-red-500 
+    text-white font-semibold text-lg 
+    px-10 py-4 rounded-xl 
+    shadow-lg hover:shadow-xl 
+    hover:scale-105 transition-all duration-300 
+    flex items-center gap-3"
+  >
+    Get Marketing Consultation
+    <FaArrowRight />
+  </button>
+</div>
 
       </div>
 
