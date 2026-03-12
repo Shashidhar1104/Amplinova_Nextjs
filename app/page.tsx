@@ -17,10 +17,10 @@ export default function HomePage() {
       <WhoWeAre />
       <Services />
       <OurClients />
-      <Testimonials />
-      <Contact />
       <DigitalMarketingWork />
-      <Footer /> 
+      <Testimonials />
+      <Contact />   
+      <Footer />
     </div>
   );
 }
