@@ -6,6 +6,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 
+
 import {
   FaFacebookF,
   FaInstagram,
@@ -37,14 +38,34 @@ export default function Navbar() {
   const activeStyle = "text-orange-400";
   const defaultStyle = "hover:text-orange-400";
 
-  const services = [
+  const services = {
+  it: [
     { name: "Web Development", href: "/services/it/web-development" },
     { name: "Mobile App Development", href: "/services/it/mobile-app-development" },
     { name: "Cloud Solutions", href: "/services/it/cloud-solutions" },
     { name: "Cybersecurity", href: "/services/it/cybersecurity" },
+    { name: "IT Infrastructure", href: "/services/it/it-infrastructure" },
+    { name: "Database Management", href: "/services/it/database-management" },
+    { name: "DevOps Services", href: "/services/it/devops-services" },
+    { name: "AI & ML Services", href: "/services/it/ai-ml-services" },
+  ],
+
+  marketing: [
     { name: "SEO Services", href: "/services/digital-marketing/seo" },
-    { name: "Social Media Marketing", href: "/services/digital-marketing/social-media" },
-  ];
+    { name: "PPC Advertising", href: "/services/digital-marketing/ppc-advertising" },
+    { name: "Social Media Marketing", href: "/services/digital-marketing/social-media-marketing" },
+    { name: "Email Marketing", href: "/services/digital-marketing/email-marketing" },
+    { name: "Influencer Marketing", href: "/services/digital-marketing/influencer-marketing" },
+    { name: "Content Creation", href: "/services/digital-marketing/content-creation" },
+    { name: "Conversion Optimization", href: "/services/digital-marketing/conversion-optimization" },
+    { name: "Analytics Reporting", href: "/services/digital-marketing/analytics-reporting" },
+  ],
+};
+
+
+
+
+const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   return (
     <>
@@ -124,38 +145,61 @@ export default function Navbar() {
             </Link>
 
             {/* SERVICES DROPDOWN */}
-            <div
-              className="relative"
-              onMouseEnter={() => setServicesOpen(true)}
-              onMouseLeave={() => setServicesOpen(false)}
-            >
-              <button 
-              className="flex items-center gap-2 hover:text-orange-400">
-                <FaRocket /> Services
-                <FaChevronDown />
-              </button>
+<div
+  className="relative"
+  onMouseEnter={() => setServicesOpen(true)}
+  onMouseLeave={() => {
+    setServicesOpen(false);
+    setActiveCategory(null);
+  }}
+>
+  <button className="flex items-center gap-2 hover:text-orange-400">
+    <FaRocket /> Services
+    <FaChevronDown />
+  </button>
 
-              <AnimatePresence>
-                {servicesOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    className="absolute top-full left-0 mt-3 bg-gray-900 w-64 rounded-xl shadow-xl border border-gray-700"
-                  >
-                    {services.map((service) => (
-                      <Link
-                        key={service.name}
-                        href={service.href}
-                        className="block px-4 py-3 hover:bg-orange-500 hover:text-white"
-                      >
-                        {service.name}
-                      </Link>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+  {servicesOpen && (
+    <div className="absolute top-full left-0 mt-4 flex bg-gray-900 rounded-xl shadow-xl border border-gray-700">
+
+      {/* LEFT CATEGORY PANEL */}
+      <div className="w-60 border-r border-gray-700">
+
+        <div
+          onMouseEnter={() => setActiveCategory("it")}
+          className="px-5 py-4 cursor-pointer hover:bg-orange-500"
+        >
+          IT Services
+        </div>
+
+        <div
+          onMouseEnter={() => setActiveCategory("marketing")}
+          className="px-5 py-4 cursor-pointer hover:bg-orange-500"
+        >
+          Digital Marketing
+        </div>
+
+      </div>
+
+      {/* RIGHT SERVICES PANEL */}
+      {activeCategory && (
+        <div className="w-80 p-6">
+
+          {services[activeCategory].map((service) => (
+            <Link
+              key={service.name}
+              href={service.href}
+              className="block py-2 hover:text-orange-400"
+            >
+              {service.name}
+            </Link>
+          ))}
+
+        </div>
+      )}
+
+    </div>
+  )}
+</div>
 
             <Link
               href="/careers"
