@@ -200,25 +200,37 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Bottom */}
-        <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col lg:flex-row justify-between items-center gap-4">
+        {/* Bottom Bar */}
+        <div className={`border-t border-gray-800 mt-12 pt-8 transition-all duration-700 delay-500 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+          <div className="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
+            {/* Copyright */}
+            <div className="text-center lg:text-left">
+              <p className="text-gray-400 text-sm flex items-center gap-2">
+                © 2024 <span className="text-orange-400 font-semibold">Amplinova</span>. All rights reserved.
+                <span className="text-gray-600">|</span>
+                <span className="text-gray-500 flex items-center gap-1">
+                  Made with <FaHeart className="w-3 h-3 text-red-400" /> by Amplinovians
+                </span>
+              </p>
+              <p className="text-gray-500 text-xs mt-1">
+                Transforming digital experiences since 2020
+              </p>
+            </div>
 
-          <p className="text-gray-400 text-sm flex items-center gap-2">
-            © 2024 <span className="text-orange-400">Amplinova</span>. All rights reserved.
-            <FaHeart className="text-red-400 text-xs" />
-          </p>
-
-          <div className="flex gap-6">
-            {legalLinks.map((item) => (
-              <Link
-                key={item.name}
-                href={item.url}
-                className="text-gray-400 hover:text-orange-400 text-sm"
-              >
-                {item.name}
-              </Link>
-            ))}
+            {/* Legal Links */}
+            <div className="flex flex-wrap justify-center gap-6">
+              {legalLinks.map((item, index) => (
+                <a 
+                  key={item.name}
+                  href={item.url} 
+                  className="text-gray-400 hover:text-orange-400 text-sm transition-all duration-300 hover:translate-y-0.5 flex items-center gap-1"
+                  style={{ transitionDelay: `${index * 100}ms` }}
+                >
+                  {item.name}
+                </a>
+              ))}
+            </div>
           </div>
-
         </div>
       </div>
     </footer>

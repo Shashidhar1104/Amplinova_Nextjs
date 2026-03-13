@@ -111,7 +111,6 @@ const Hero: React.FC<HeroProps> = ({
             <div className="flex flex-col sm:flex-row gap-4 mb-8 justify-center lg:justify-start">
 
               <button
-              
                 onClick={() => router.push("/contact-us")}
                 className="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-3 rounded-lg font-semibold flex items-center gap-2 hover:scale-105 transition"
               >

@@ -106,8 +106,8 @@ export default function Navbar() {
             </Link>
 
             <Link
-              href="/it"
-              className={isActive("/it") ? activeStyle : defaultStyle}
+              href="/ithomepage"
+              className={isActive("/ithomepage") ? activeStyle : defaultStyle}
             >
               <div className="flex items-center gap-2">
                 <FaCode /> IT Solutions
@@ -115,8 +115,8 @@ export default function Navbar() {
             </Link>
 
             <Link
-              href="/marketing"
-              className={isActive("/marketing") ? activeStyle : defaultStyle}
+              href="/digitalmarketing"
+              className={isActive("/digitalmarketing") ? activeStyle : defaultStyle}
             >
               <div className="flex items-center gap-2">
                 <FaRocket /> Digital Marketing

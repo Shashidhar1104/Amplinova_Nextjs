@@ -1,7 +1,7 @@
 import "./globals.css";
 import { ReactNode } from "react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import Chatbot from "./components/Chatbot";
+// import Chatbot from "./components/Chatbot";
 
 export const metadata = {
   title: "Amplinova",
@@ -17,7 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body suppressHydrationWarning>
         {children}
-        <Chatbot />
+        {/* <Chatbot /> */}
         <SpeedInsights />
       </body>
     </html>
