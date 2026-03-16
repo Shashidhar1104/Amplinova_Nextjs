@@ -1,6 +1,5 @@
 import React from "react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+
 import Hero from "../components/Hero";
 //import Contact from "../components/Contact";
 import Process from "../components/Process";
@@ -13,7 +12,7 @@ import DigitalMarketingWork from "../components/DigitalMarketingWork";
 const DigitalMarketing = () => {
   return (
     <div>
-      <Navbar />
+      
       <Hero mode="marketing" />
       <DigitalMarketingServices />
       <Process mode="digital-marketing" />
@@ -21,7 +20,7 @@ const DigitalMarketing = () => {
       <WhyChooseUs mode="digital-marketing" />
       <DigitalMarketingWork />
       <FAQ mode="digital-marketing"/>
-      <Footer />
+      
     </div>
   );
 };

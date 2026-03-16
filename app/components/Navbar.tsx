@@ -6,7 +6,6 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 
-
 import {
   FaFacebookF,
   FaInstagram,
@@ -39,40 +38,62 @@ export default function Navbar() {
   const defaultStyle = "hover:text-orange-400";
 
   const services = {
-  it: [
-    { name: "Web Development", href: "/services/it/web-development" },
-    { name: "Mobile App Development", href: "/services/it/mobile-app-development" },
-    { name: "Cloud Solutions", href: "/services/it/cloud-solutions" },
-    { name: "Cybersecurity", href: "/services/it/cybersecurity" },
-    { name: "IT Infrastructure", href: "/services/it/it-infrastructure" },
-    { name: "Database Management", href: "/services/it/database-management" },
-    { name: "DevOps Services", href: "/services/it/devops-services" },
-    { name: "AI & ML Services", href: "/services/it/ai-ml-services" },
-  ],
+    it: [
+      { name: "Web Development", href: "/services/it/web-development" },
+      {
+        name: "Mobile App Development",
+        href: "/services/it/mobile-app-development",
+      },
+      { name: "Cloud Solutions", href: "/services/it/cloud-solutions" },
+      { name: "Cybersecurity", href: "/services/it/cybersecurity" },
+      { name: "IT Infrastructure", href: "/services/it/it-infrastructure" },
+      { name: "Database Management", href: "/services/it/database-management" },
+      { name: "DevOps Services", href: "/services/it/devops-services" },
+      { name: "AI & ML Services", href: "/services/it/ai-ml-services" },
+    ],
 
-  marketing: [
-    { name: "SEO Services", href: "/services/digital-marketing/seo" },
-    { name: "PPC Advertising", href: "/services/digital-marketing/ppc-advertising" },
-    { name: "Social Media Marketing", href: "/services/digital-marketing/social-media-marketing" },
-    { name: "Email Marketing", href: "/services/digital-marketing/email-marketing" },
-    { name: "Influencer Marketing", href: "/services/digital-marketing/influencer-marketing" },
-    { name: "Content Creation", href: "/services/digital-marketing/content-creation" },
-    { name: "Conversion Optimization", href: "/services/digital-marketing/conversion-optimization" },
-    { name: "Analytics Reporting", href: "/services/digital-marketing/analytics-reporting" },
-  ],
-};
+    marketing: [
+      { name: "SEO Services", href: "/services/digital-marketing/seo" },
+      {
+        name: "PPC Advertising",
+        href: "/services/digital-marketing/ppc-advertising",
+      },
+      {
+        name: "Social Media Marketing",
+        href: "/services/digital-marketing/social-media-marketing",
+      },
+      {
+        name: "Email Marketing",
+        href: "/services/digital-marketing/email-marketing",
+      },
+      {
+        name: "Influencer Marketing",
+        href: "/services/digital-marketing/influencer-marketing",
+      },
+      {
+        name: "Content Creation",
+        href: "/services/digital-marketing/content-creation",
+      },
+      {
+        name: "Conversion Optimization",
+        href: "/services/digital-marketing/conversion-optimization",
+      },
+      {
+        name: "Analytics Reporting",
+        href: "/services/digital-marketing/analytics-reporting",
+      },
+    ],
+  };
 
-
-
-
-const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<
+    "it" | "marketing" | null
+  >(null);
 
   return (
     <>
       {/* TOP BAR */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white text-sm">
         <div className="container mx-auto px-6 py-2 flex justify-between items-center">
-
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
               <FaEnvelope />
@@ -86,7 +107,8 @@ const [activeCategory, setActiveCategory] = useState<string | null>(null);
           </div>
 
           <div className="hidden lg:block text-yellow-300 font-semibold">
-            🚀 Book a free consultation today and transform your digital presence!
+            🚀 Book a free consultation today and transform your digital
+            presence!
           </div>
 
           <div className="flex items-center gap-4">
@@ -102,21 +124,22 @@ const [activeCategory, setActiveCategory] = useState<string | null>(null);
       {/* NAVBAR */}
       <nav className="bg-black text-white sticky top-0 z-50 shadow-xl">
         <div className="container mx-auto px-6 py-3 flex justify-between items-center">
-
           {/* LOGO */}
           <Link href="/" className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
-              <Image src="/AmpliNova  Logo-A LOGO.png" alt="logo" width={35} height={35} />
+              <Image
+                src="/AmpliNova  Logo-A LOGO.png"
+                alt="logo"
+                width={35}
+                height={35}
+              />
             </div>
 
-            <span className="text-xl font-bold text-orange-500">
-              Amplinova
-            </span>
+            <span className="text-xl font-bold text-orange-500">Amplinova</span>
           </Link>
 
           {/* DESKTOP MENU */}
           <div className="hidden lg:flex items-center gap-8 font-semibold">
-
             <Link
               href="/"
               className={isActive("/") ? activeStyle : defaultStyle}
@@ -137,7 +160,9 @@ const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
             <Link
               href="/digitalmarketing"
-              className={isActive("/digitalmarketing") ? activeStyle : defaultStyle}
+              className={
+                isActive("/digitalmarketing") ? activeStyle : defaultStyle
+              }
             >
               <div className="flex items-center gap-2">
                 <FaRocket /> Digital Marketing
@@ -145,61 +170,55 @@ const [activeCategory, setActiveCategory] = useState<string | null>(null);
             </Link>
 
             {/* SERVICES DROPDOWN */}
-<div
-  className="relative"
-  onMouseEnter={() => setServicesOpen(true)}
-  onMouseLeave={() => {
-    setServicesOpen(false);
-    setActiveCategory(null);
-  }}
->
-  <button className="flex items-center gap-2 hover:text-orange-400">
-    <FaRocket /> Services
-    <FaChevronDown />
-  </button>
-
-  {servicesOpen && (
-    <div className="absolute top-full left-0 mt-4 flex bg-gray-900 rounded-xl shadow-xl border border-gray-700">
-
-      {/* LEFT CATEGORY PANEL */}
-      <div className="w-60 border-r border-gray-700">
-
-        <div
-          onMouseEnter={() => setActiveCategory("it")}
-          className="px-5 py-4 cursor-pointer hover:bg-orange-500"
-        >
-          IT Services
-        </div>
-
-        <div
-          onMouseEnter={() => setActiveCategory("marketing")}
-          className="px-5 py-4 cursor-pointer hover:bg-orange-500"
-        >
-          Digital Marketing
-        </div>
-
-      </div>
-
-      {/* RIGHT SERVICES PANEL */}
-      {activeCategory && (
-        <div className="w-80 p-6">
-
-          {services[activeCategory].map((service) => (
-            <Link
-              key={service.name}
-              href={service.href}
-              className="block py-2 hover:text-orange-400"
+            <div
+              className="relative group"
+              onMouseEnter={() => setServicesOpen(true)}
+              onMouseLeave={() => {
+                setServicesOpen(false);
+                setActiveCategory(null);
+              }}
             >
-              {service.name}
-            </Link>
-          ))}
+              <button className="flex items-center gap-2 hover:text-orange-400">
+                <FaRocket /> Services
+                <FaChevronDown />
+              </button>
 
-        </div>
-      )}
+              {servicesOpen && (
+                <div className="absolute top-full left-0 flex bg-gray-900 rounded-xl shadow-xl border border-gray-700">
+                  {/* LEFT CATEGORY PANEL */}
+                  <div className="w-60 border-r border-gray-700">
+                    <div
+                      onMouseEnter={() => setActiveCategory("it")}
+                      className="px-5 py-4 cursor-pointer hover:bg-orange-500"
+                    >
+                      IT Services
+                    </div>
 
-    </div>
-  )}
-</div>
+                    <div
+                      onMouseEnter={() => setActiveCategory("marketing")}
+                      className="px-5 py-4 cursor-pointer hover:bg-orange-500"
+                    >
+                      Digital Marketing
+                    </div>
+                  </div>
+
+                  {/* RIGHT SERVICES PANEL */}
+                  {activeCategory && (
+                    <div className="w-80 p-6">
+                      {services[activeCategory].map((service) => (
+                        <Link
+                          key={service.name}
+                          href={service.href}
+                          className="block py-2 hover:text-orange-400"
+                        >
+                          {service.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             <Link
               href="/careers"
@@ -246,11 +265,21 @@ const [activeCategory, setActiveCategory] = useState<string | null>(null);
               exit={{ height: 0 }}
               className="lg:hidden bg-gray-900 px-6 py-4 space-y-4"
             >
-              <Link href="/" onClick={() => setMobileOpen(false)}>Home</Link>
-              <Link href="/it" onClick={() => setMobileOpen(false)}>IT Solutions</Link>
-              <Link href="/marketing" onClick={() => setMobileOpen(false)}>Marketing</Link>
-              <Link href="/careers" onClick={() => setMobileOpen(false)}>Careers</Link>
-              <Link href="/contact-us" onClick={() => setMobileOpen(false)}>Contact</Link>
+              <Link href="/" onClick={() => setMobileOpen(false)}>
+                Home
+              </Link>
+              <Link href="/it" onClick={() => setMobileOpen(false)}>
+                IT Solutions
+              </Link>
+              <Link href="/marketing" onClick={() => setMobileOpen(false)}>
+                Marketing
+              </Link>
+              <Link href="/careers" onClick={() => setMobileOpen(false)}>
+                Careers
+              </Link>
+              <Link href="/contact-us" onClick={() => setMobileOpen(false)}>
+                Contact
+              </Link>
             </motion.div>
           )}
         </AnimatePresence>
