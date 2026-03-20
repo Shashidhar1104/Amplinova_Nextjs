@@ -1,26 +1,18 @@
 "use client";
 
-import React, { useState, useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { useState } from "react";
 import {
   FaPhone,
   FaEnvelope,
   FaMapMarkerAlt,
-  FaPaperPlane,
-  FaWhatsapp,
   FaClock,
   FaLinkedin,
   FaFacebook,
   FaInstagram,
+  FaWhatsapp,
 } from "react-icons/fa";
 
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-
-/* ================= TYPES ================= */
-
-interface ITFormData {
-  form_type: "it";
+type ITData = {
   fullname: string;
   company: string;
   email: string;
@@ -28,12 +20,9 @@ interface ITFormData {
   service: string;
   budget: string;
   description: string;
-  deadline: string;
-  file: File | null;
-}
+};
 
-interface DMFormData {
-  form_type: "dm";
+type DMData = {
   fullname: string;
   brand: string;
   email: string;
@@ -42,19 +31,14 @@ interface DMFormData {
   budget: string;
   goals: string[];
   description: string;
-  file: File | null;
-}
+};
 
-/* ================= COMPONENT ================= */
-
-const ContactUs = () => {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const isInView = useInView(ref, { once: true });
-
+export default function ContactUsPage() {
   const [formType, setFormType] = useState<"it" | "dm">("it");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [status, setStatus] = useState<null | "success" | "error">(null);
 
-  const [itData, setItData] = useState<ITFormData>({
-    form_type: "it",
+  const [itData, setItData] = useState<ITData>({
     fullname: "",
     company: "",
     email: "",
@@ -62,12 +46,9 @@ const ContactUs = () => {
     service: "",
     budget: "",
     description: "",
-    deadline: "",
-    file: null,
   });
 
-  const [dmData, setDmData] = useState<DMFormData>({
-    form_type: "dm",
+  const [dmData, setDmData] = useState<DMData>({
     fullname: "",
     brand: "",
     email: "",
@@ -76,99 +57,22 @@ const ContactUs = () => {
     budget: "",
     goals: [],
     description: "",
-    file: null,
   });
 
-  const [submitStatus, setSubmitStatus] = useState<
-    "success" | "error" | null
-  >(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const itServices = ["Web Development", "App Development", "Software Development"];
+  const itBudgets = ["₹25k – ₹50k", "₹50k – ₹1L", "₹1L – ₹5L", "₹5L+"];
 
-  /* ================= ANIMATIONS ================= */
+  const dmServices = ["SEO", "Social Media", "Branding"];
+  const dmBudgets = ["₹20k – ₹50k", "₹50k – ₹1L", "₹1L+"];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15, duration: 0.8 },
-    },
+  const businessGoals = ["Increase Leads", "Brand Awareness", "Grow Social Media"];
+
+  const handleITChange = (e: any) => {
+    setItData({ ...itData, [e.target.name]: e.target.value });
   };
 
-  const itemVariants = {
-    hidden: { y: 30, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { duration: 0.6 },
-    },
-  };
-
-  /* ================= OPTIONS ================= */
-
-  const itServices = [
-    { value: "web_development", label: "Web Development" },
-    { value: "app_development", label: "App Development" },
-    { value: "software_development", label: "Software Development" },
-    { value: "cloud_solutions", label: "Cloud Solutions" },
-    { value: "it_consulting", label: "IT Consulting" },
-    { value: "automation_ai", label: "Automation/AI Integration" },
-    { value: "cybersecurity", label: "Cybersecurity" },
-    { value: "other_it", label: "Other" },
-  ];
-
-  const dmServices = [
-    { value: "social_media_marketing", label: "Social Media Marketing" },
-    { value: "performance_marketing", label: "Performance Marketing (Ads)" },
-    { value: "seo", label: "SEO" },
-    { value: "branding_design", label: "Branding & Creative Design" },
-    { value: "content_marketing", label: "Content Marketing" },
-    { value: "lead_generation", label: "Lead Generation" },
-    { value: "website_marketing", label: "Website Marketing" },
-    { value: "marketing_automation", label: "Marketing Automation" },
-    { value: "all_in_one", label: "All-in-One Digital Marketing" },
-    { value: "other_dm", label: "Other" },
-  ];
-
-  const itBudgets = [
-    { value: "it_25_50k", label: "₹25,000 – ₹50,000" },
-    { value: "it_50_100k", label: "₹50,000 – ₹1,00,000" },
-    { value: "it_100_500k", label: "₹1,00,000 – ₹5,00,000" },
-    { value: "it_500k_plus", label: "₹5,00,000+" },
-  ];
-
-  const dmBudgets = [
-    { value: "dm_20_50k", label: "₹20,000 – ₹50,000" },
-    { value: "dm_50_100k", label: "₹50,000 – ₹1,00,000" },
-    { value: "dm_100_500k", label: "₹1,00,000 – ₹5,00,000" },
-    { value: "dm_500k_plus", label: "₹5,00,000+" },
-  ];
-
-  const businessGoals = [
-    { value: "increase_leads", label: "Increase Leads" },
-    { value: "brand_awareness", label: "Improve Brand Awareness" },
-    { value: "social_media_growth", label: "Grow Social Media" },
-    { value: "website_traffic", label: "Increase Website Traffic" },
-    { value: "scale_sales", label: "Scale Sales" },
-  ];
-
-  /* ================= HANDLERS ================= */
-
-  const handleITChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    const { name, value, files } = e.target as HTMLInputElement;
-
-    setItData((prev) => ({
-      ...prev,
-      [name]: files ? files[0] : value,
-    }));
-  };
-
-  const handleDMChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    const { name, value, files, type, checked } =
-      e.target as HTMLInputElement;
+  const handleDMChange = (e: any) => {
+    const { name, value, type, checked } = e.target;
 
     if (type === "checkbox") {
       setDmData((prev) => ({
@@ -177,250 +81,377 @@ const ContactUs = () => {
           ? [...prev.goals, value]
           : prev.goals.filter((g) => g !== value),
       }));
-      return;
+    } else {
+      setDmData({ ...dmData, [name]: value });
     }
-
-    setDmData((prev) => ({
-      ...prev,
-      [name]: files ? files[0] : value,
-    }));
   };
-    /* ================= SUBMIT ================= */
 
-  const handleITSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (data: any, type: "it" | "dm") => {
     setIsSubmitting(true);
-    setSubmitStatus(null);
+    setStatus(null);
 
     try {
-      const formData = new FormData();
-
-      Object.keys(itData).forEach((key) => {
-        const value = itData[key as keyof ITFormData];
-
-        if (key === "file" && value) {
-          formData.append(key, value);
-        } else if (value !== null && value !== "") {
-          formData.append(key, value as string);
-        }
-      });
-
       const res = await fetch(
         "https://amplinova.pythonanywhere.com/api/contact/",
         {
           method: "POST",
-          body: formData,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...data, form_type: type }),
         }
       );
 
       if (res.ok) {
-        setSubmitStatus("success");
-        setItData({
-          form_type: "it",
-          fullname: "",
-          company: "",
-          email: "",
-          phone: "",
-          service: "",
-          budget: "",
-          description: "",
-          deadline: "",
-          file: null,
-        });
+        setStatus("success");
       } else {
-        setSubmitStatus("error");
+        setStatus("error");
       }
     } catch {
-      setSubmitStatus("error");
+      setStatus("error");
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  const handleDMSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus(null);
-
-    try {
-      const formData = new FormData();
-
-      Object.entries(dmData).forEach(([key, value]) => {
-  if (key === "file" && value instanceof File) {
-    formData.append(key, value);
-  } 
-  else if (key === "goals" && Array.isArray(value)) {
-    value.forEach((g) => formData.append("goals", g));
-  } 
-  else if (typeof value === "string" && value !== "") {
-    formData.append(key, value);
-  }
-});
-
-      const res = await fetch(
-        "https://amplinova.pythonanywhere.com/api/contact/",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      if (res.ok) {
-        setSubmitStatus("success");
-        setDmData({
-          form_type: "dm",
-          fullname: "",
-          brand: "",
-          email: "",
-          phone: "",
-          service: "",
-          budget: "",
-          goals: [],
-          description: "",
-          file: null,
-        });
-      } else {
-        setSubmitStatus("error");
-      }
-    } catch {
-      setSubmitStatus("error");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  /* ================= UI ================= */
 
   return (
-    <>
+    <section className="pt-12 pb-16 bg-gradient-to-br from-amber-50 via-white to-orange-50">
+      <div className="max-w-7xl mx-auto px-6">
 
-      <section className="pt-10 pb-10 bg-gradient-to-br from-amber-50 via-white to-orange-50 text-gray-800">
-        <div className="container mx-auto px-6">
-
-          {/* HEADER */}
-          <motion.div
-            ref={ref}
-            variants={containerVariants}
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            className="text-center mb-16"
-          >
-            <motion.h1 variants={itemVariants} className="text-5xl font-bold text-gray-900">
-              Contact Us
-            </motion.h1>
-          </motion.div>
-
-          {/* LAYOUT */}
-          <div className="grid lg:grid-cols-[25%_75%] gap-10">
-
-            {/* LEFT SIDE */}
-            <div className="space-y-4">
-              <div className="bg-white p-4 rounded-xl shadow">
-                <FaPhone /> +91 9976089089
-              </div>
-            </div>
-
-            {/* RIGHT FORM */}
-            <div className="bg-white p-8 rounded-2xl shadow">
-
-              {/* TABS */}
-              <div className="flex mb-6">
-                <button
-                  onClick={() => setFormType("it")}
-                  className={`w-1/2 py-2 ${
-                    formType === "it"
-                      ? "bg-amber-500 text-white"
-                      : "bg-gray-100"
-                  }`}
-                >
-                  IT Services
-                </button>
-
-                <button
-                  onClick={() => setFormType("dm")}
-                  className={`w-1/2 py-2 ${
-                    formType === "dm"
-                      ? "bg-amber-500 text-white"
-                      : "bg-gray-100"
-                  }`}
-                >
-                  Digital Marketing
-                </button>
-              </div>
-
-              {/* STATUS */}
-              {submitStatus === "success" && (
-                <p className="text-green-600 mb-4">
-                  Submitted successfully!
-                </p>
-              )}
-
-              {submitStatus === "error" && (
-                <p className="text-red-600 mb-4">
-                  Something went wrong.
-                </p>
-              )}
-
-              {/* IT FORM */}
-              {formType === "it" && (
-                <form onSubmit={handleITSubmit} className="space-y-4">
-                  <input
-                    name="fullname"
-                    value={itData.fullname}
-                    onChange={handleITChange}
-                    placeholder="Full Name"
-                    className="w-full border p-2"
-                    required
-                  />
-
-                  <textarea
-                    name="description"
-                    value={itData.description}
-                    onChange={handleITChange}
-                    placeholder="Project Description"
-                    className="w-full border p-2"
-                    required
-                  />
-
-                  <button className="bg-amber-600 text-white px-6 py-2 rounded">
-                    {isSubmitting ? "Submitting..." : "Submit"}
-                  </button>
-                </form>
-              )}
-
-              {/* DM FORM */}
-              {formType === "dm" && (
-                <form onSubmit={handleDMSubmit} className="space-y-4">
-                  <input
-                    name="fullname"
-                    value={dmData.fullname}
-                    onChange={handleDMChange}
-                    placeholder="Full Name"
-                    className="w-full border p-2"
-                    required
-                  />
-
-                  <textarea
-                    name="description"
-                    value={dmData.description}
-                    onChange={handleDMChange}
-                    placeholder="Marketing Needs"
-                    className="w-full border p-2"
-                    required
-                  />
-
-                  <button className="bg-amber-600 text-white px-6 py-2 rounded">
-                    {isSubmitting ? "Submitting..." : "Submit"}
-                  </button>
-                </form>
-              )}
-            </div>
-          </div>
+        {/* HEADER */}
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-bold text-gray-800">
+            Contact <span className="text-amber-500">Us</span>
+          </h1>
+          <p className="text-gray-600 mt-2">
+            Choose your service type and fill the related form.
+          </p>
         </div>
-      </section>
 
-    </>
+        <div className="grid lg:grid-cols-[25%_75%] gap-8">
+
+          {/* LEFT */}
+          <div className="space-y-4 text-gray-800">
+  {[
+    {
+      icon: FaPhone,
+      title: "Call Us",
+      detail: "+91 9976089089",
+      desc: "Mon–Sat, 11AM – 8PM",
+      color: "bg-blue-500",
+    },
+    {
+      icon: FaEnvelope,
+      title: "Email Us",
+      detail: "info@amplinova.com",
+      desc: "We reply within 24 hours",
+      color: "bg-orange-500",
+    },
+    {
+      icon: FaMapMarkerAlt,
+      title: "Visit Us",
+      detail: "Hyderabad, Telangana",
+      desc: "India",
+      color: "bg-green-500",
+    },
+    {
+      icon: FaClock,
+      title: "Business Hours",
+      detail: "Mon – Fri",
+      desc: "11:00 AM – 8:00 PM IST",
+      color: "bg-purple-500",
+    },
+  ].map((item, i) => (
+    <div
+      key={i}
+      className="bg-white p-5 rounded-xl border border-amber-100 shadow-sm hover:shadow-md transition"
+    >
+      <div className="flex items-start gap-4">
+
+        {/* ICON BOX (FIXED) */}
+        <div
+          className={`w-12 h-12 flex items-center justify-center rounded-xl text-white shadow ${item.color}`}
+        >
+          <item.icon className="text-lg" />
+        </div>
+
+        {/* TEXT */}
+        <div>
+          <h3 className="font-bold text-lg">{item.title}</h3>
+          <p className="font-medium">{item.detail}</p>
+          <p className="text-sm text-gray-500">{item.desc}</p>
+        </div>
+      </div>
+    </div>
+  ))}
+
+  {/* SOCIAL */}
+  <div>
+    <h3 className="font-bold mb-3">Follow Us</h3>
+    <div className="flex gap-3">
+      {[FaLinkedin, FaWhatsapp, FaFacebook, FaInstagram].map(
+        (Icon, i) => (
+          <div
+            key={i}
+            className="w-10 h-10 flex items-center justify-center border rounded-lg bg-white shadow-sm hover:bg-gray-50"
+          >
+            <Icon className="text-gray-600" />
+          </div>
+        )
+      )}
+    </div>
+  </div>
+</div>
+
+          
+          {/* RIGHT */}
+<div className="bg-white p-8 rounded-2xl border border-amber-100 shadow-sm">
+
+  {/* TABS */}
+  <div className="flex w-full mb-8 rounded-xl overflow-hidden border border-gray-200">
+    <button
+      type="button"
+      onClick={() => setFormType("it")}
+      className={`w-1/2 py-3 font-semibold transition ${
+        formType === "it"
+          ? "bg-amber-500 text-white"
+          : "bg-gray-100 text-gray-600"
+      }`}
+    >
+      IT Services
+    </button>
+
+    <button
+      type="button"
+      onClick={() => setFormType("dm")}
+      className={`w-1/2 py-3 font-semibold transition ${
+        formType === "dm"
+          ? "bg-amber-500 text-white"
+          : "bg-gray-100 text-gray-600"
+      }`}
+    >
+      Digital Marketing
+    </button>
+  </div>
+
+  {/* STATUS */}
+  {status === "success" && (
+    <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl text-green-700">
+      Thank you! We'll get back to you within 24 hours.
+    </div>
+  )}
+
+  {/* IT FORM */}
+  {formType === "it" && (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit(itData, "it");
+      }}
+      className="space-y-6"
+    >
+      <h3 className="text-2xl text-gray-800 font-bold mb-2">
+        IT Development & Tech Solutions
+      </h3>
+
+      {/* NAME + COMPANY */}
+      <div className="grid md:grid-cols-2 gap-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Full Name *
+          </label>
+          <input
+            name="fullname"
+            onChange={handleITChange}
+            placeholder="Enter your Full Name"
+            className="w-full text-gray-800 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Company Name
+          </label>
+          <input
+            name="company"
+            onChange={handleITChange}
+            placeholder="Enter your Company Name"
+            className="w-full text-gray-800 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none"
+          />
+        </div>
+      </div>
+
+      {/* EMAIL + PHONE */}
+      <div className="grid md:grid-cols-2 gap-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Email *
+          </label>
+          <input
+            name="email"
+            onChange={handleITChange}
+            placeholder="Enter your Email"
+            className="w-full text-gray-800 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Phone Number
+          </label>
+          <input
+            name="phone"
+            onChange={handleITChange}
+            placeholder="Enter your Phone Number"
+            className="w-full text-gray-800 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none"
+          />
+        </div>
+      </div>
+
+      {/* SERVICE + BUDGET */}
+      <div className="grid md:grid-cols-2 gap-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Service Required *
+          </label>
+          <select
+            name="service"
+            onChange={handleITChange}
+            className="w-full text-gray-800 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none"
+            required
+          >
+            <option value="">Select Service</option>
+            {itServices.map((s) => (
+              <option key={s}>{s}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Project Budget *
+          </label>
+          <select
+            name="budget"
+            onChange={handleITChange}
+            className="w-full text-gray-800 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none"
+            required
+          >
+            <option value="">Select Budget</option>
+            {itBudgets.map((b) => (
+              <option key={b}>{b}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* DESCRIPTION */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Project Description *
+        </label>
+        <textarea
+          name="description"
+          onChange={handleITChange}
+          rows={4}
+          placeholder="Enter details about your project requirements..."
+          className="w-full text-gray-800 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none"
+          required
+        />
+      </div>
+
+      {/* BUTTON */}
+      <button
+        type="submit"
+        className="w-full py-3 bg-amber-600 text-white font-semibold rounded-xl hover:bg-amber-700 transition"
+      >
+        {isSubmitting ? "Submitting..." : "Request Proposal"}
+      </button>
+    </form>
+  )}
+
+  {/* DM FORM */}
+  {formType === "dm" && (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit(dmData, "dm");
+      }}
+      className="space-y-6"
+    >
+      <h3 className="text-2xl text-gray-800 font-bold mb-2">
+        Digital Marketing Solutions
+      </h3>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        <input
+          name="fullname"
+          onChange={handleDMChange}
+          placeholder="Full Name"
+          className="input text-gray-800"
+        />
+        <input
+          name="brand"
+          onChange={handleDMChange}
+          placeholder="Business Name"
+          className="input text-gray-800"
+        />
+      </div>
+
+      {/* GOALS */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Business Goals
+        </label>
+        <div className="grid md:grid-cols-2 gap-3">
+          {businessGoals.map((g) => (
+            <label
+              key={g}
+              className="flex text-gray-800 items-center gap-2 p-3 border rounded-lg hover:bg-orange-50"
+            >
+              <input type="checkbox" value={g} onChange={handleDMChange} />
+              {g}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <textarea
+        name="description"
+        onChange={handleDMChange}
+        className="w-full text-gray-800 px-4  py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none"
+        placeholder="Describe your needs"
+      />
+
+      <button className="w-full py-3 bg-amber-600 text-white rounded-xl">
+        Submit
+      </button>
+    </form>
+  )}
+</div>
+
+
+        </div>
+        <div className="mt-16 bg-gradient-to-r from-amber-500 to-orange-500 text-white p-10 rounded-3xl text-center shadow-lg max-w-7xl mx-auto">
+  
+  <h4 className="text-2xl font-bold mb-4">
+    Emergency Support
+  </h4>
+
+  <p className="text-amber-100 mb-4">
+    Need immediate assistance?
+  </p>
+
+  <p className="text-3xl font-extrabold">
+    +91 9976089089
+  </p>
+
+  <p className="text-sm text-amber-100">
+    24/7 Technical Support
+  </p>
+
+</div>
+      </div>
+    </section>
   );
-};
-
-export default ContactUs;
+}
