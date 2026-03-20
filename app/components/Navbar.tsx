@@ -221,11 +221,11 @@ export default function Navbar() {
             </div>
 
             <Link
-              href="/careers"
-              className={isActive("/careers") ? activeStyle : defaultStyle}
+              href="/about-us"
+              className={isActive("/about-us") ? activeStyle : defaultStyle}
             >
               <div className="flex items-center gap-2">
-                <FaBriefcase /> Careers
+                <FaBriefcase /> About Us
               </div>
             </Link>
 
@@ -234,7 +234,7 @@ export default function Navbar() {
               className={isActive("/contact-us") ? activeStyle : defaultStyle}
             >
               <div className="flex items-center gap-2">
-                <FaAddressCard /> Contact
+                <FaAddressCard /> Contact Us
               </div>
             </Link>
 
